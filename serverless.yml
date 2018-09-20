@@ -1,0 +1,26 @@
+service: order-service
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  logRetentionInDays: 14
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+  environment: ${file(env.yml):${opt:stage}}
+  region: ap-southeast-1
+
+package:
+ exclude:
+  - src/**
+  - dist/**/sampleInputs/**
+
+functions:
+  getRooms:
+    handler: dist/getRooms/index.getRooms
+    timeout: 10
+  submitOrder:
+    handler: dist/submitOrder/index.submitOrder
+    timeout: 20
