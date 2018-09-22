@@ -10,6 +10,13 @@ const DynamoDB = new AWS.DynamoDB.DocumentClient();
 
 const { ROOM_TABLE } = process.env;
 
-export default async function getRooms() {
-  return DynamoDB.scan({ TableName: ROOM_TABLE }).promise();
+export default async function getRooms(orderType) {
+  const params = {
+    TableName: ROOM_TABLE,
+    KeyConditionExpression: 'orderType = :orderType',
+    ExpressionAttributeValues: {
+      ':orderType': orderType
+    }
+  };
+  return DynamoDB.query(params).promise().then(data => data.Items);
 }

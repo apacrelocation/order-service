@@ -1,10 +1,15 @@
 import getErrorMessage from './__helpers/utilities/getErrorMessage';
 import getRoomDocuments from './__helpers/dynamodb/getRoomDocuments';
+import { parseAndGetAPIGatewayInput } from './__helpers/utilities/parseAndGetAPIGatewayInput';
 
 module.exports.getRooms = async function getRooms(events, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
   try {
-    const rooms = await getRoomDocuments();
+    const {
+      params
+    } = parseAndGetAPIGatewayInput(events);
+
+    const rooms = await getRoomDocuments(params.orderType);
     callback(null, {
       statusCode: 200,
       headers: {
